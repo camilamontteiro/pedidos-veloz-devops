@@ -2,51 +2,39 @@ version: "3.9"
 
 services:
   gateway:
-    image: nginx:alpine
-    container_name: api-gateway
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway
     ports:
-      - "8080:80"
-    depends_on:
-      - pedidos
+      - "8080:8080"
     networks:
       - pedidos-net
 
   pedidos:
-    image: hashicorp/http-echo
-    container_name: servico-pedidos
-    command: ["-text=Serviço de Pedidos ativo"]
+    build:
+      context: ./pedidos
+      dockerfile: Dockerfile
+    container_name: pedidos
     networks:
       - pedidos-net
 
   pagamentos:
-    image: hashicorp/http-echo
-    container_name: servico-pagamentos
-    command: ["-text=Serviço de Pagamentos ativo"]
+    build:
+      context: ./pagamentos
+      dockerfile: Dockerfile
+    container_name: pagamentos
     networks:
       - pedidos-net
 
   estoque:
-    image: hashicorp/http-echo
-    container_name: servico-estoque
-    command: ["-text=Serviço de Estoque ativo"]
-    networks:
-      - pedidos-net
-
-  postgres:
-    image: postgres:15-alpine
-    container_name: postgres-db
-    environment:
-      POSTGRES_DB: pedidos
-      POSTGRES_USER: pedidos_user
-      POSTGRES_PASSWORD: pedidos_pass
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+    build:
+      context: ./estoque
+      dockerfile: Dockerfile
+    container_name: estoque
     networks:
       - pedidos-net
 
 networks:
   pedidos-net:
     driver: bridge
-
-volumes:
-  pgdata:
