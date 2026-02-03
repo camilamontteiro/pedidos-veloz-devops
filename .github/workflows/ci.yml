@@ -1,0 +1,30 @@
+name: CI - Build Microservices
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Gateway image
+        run: docker build -t gateway ./gateway
+
+      - name: Build Pedidos image
+        run: docker build -t pedidos ./pedidos
+
+      - name: Build Pagamentos image
+        run: docker build -t pagamentos ./pagamentos
+
+      - name: Build Estoque image
+        run: docker build -t estoque ./estoque
